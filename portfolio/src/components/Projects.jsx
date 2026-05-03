@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { FiGithub, FiExternalLink } from 'react-icons/fi';
+import { projects } from '../data/projects';
 
 export default function Projects() {
   const sectionRef = useRef(null);
@@ -27,57 +28,6 @@ export default function Projects() {
     };
   }, []);
 
-  const projects = [
-    {
-      title: 'E-Commerce Platform',
-      description: 'A full-stack e-commerce application with Spring Boot backend and React frontend. Features include product management, shopping cart, and secure payment integration.',
-      tech: ['Spring Boot', 'React', 'PostgreSQL', 'Stripe API'],
-      gradient: 'from-indigo-600 to-purple-600',
-      liveUrl: '#',
-      githubUrl: 'https://github.com/TusharSamaniya',
-    },
-    {
-      title: 'AI Chat Application',
-      description: 'A real-time chat application powered by OpenAI API with semantic search capabilities. Built with React, Node.js, and Pinecone for vector storage.',
-      tech: ['React', 'Node.js', 'OpenAI API', 'Pinecone', 'Socket.io'],
-      gradient: 'from-pink-600 to-purple-600',
-      liveUrl: '#',
-      githubUrl: 'https://github.com/TusharSamaniya',
-    },
-    {
-      title: 'Cloud Task Management',
-      description: 'A task management system deployed on AWS with microservices architecture. Includes user authentication, real-time notifications, and data persistence.',
-      tech: ['Spring Boot', 'AWS', 'Docker', 'PostgreSQL', 'Redis'],
-      gradient: 'from-blue-600 to-cyan-600',
-      liveUrl: '#',
-      githubUrl: 'https://github.com/TusharSamaniya',
-    },
-    {
-      title: 'Authentication Service',
-      description: 'A robust authentication and authorization service using JWT and OAuth 2.0. Implements role-based access control (RBAC) with secure password hashing.',
-      tech: ['Spring Security', 'JWT', 'OAuth 2.0', 'MySQL'],
-      gradient: 'from-emerald-600 to-teal-600',
-      liveUrl: '#',
-      githubUrl: 'https://github.com/TusharSamaniya',
-    },
-    {
-      title: 'Data Analytics Dashboard',
-      description: 'An interactive dashboard for visualizing business metrics. Features real-time data updates, customizable charts, and export functionality.',
-      tech: ['React', 'Chart.js', 'Spring Boot', 'PostgreSQL'],
-      gradient: 'from-orange-600 to-red-600',
-      liveUrl: '#',
-      githubUrl: 'https://github.com/TusharSamaniya',
-    },
-    {
-      title: 'Microservices Platform',
-      description: 'A scalable microservices architecture with service discovery, API gateway, and inter-service communication. Deployed on AWS with Docker and Kubernetes.',
-      tech: ['Spring Cloud', 'Docker', 'Kubernetes', 'AWS'],
-      gradient: 'from-violet-600 to-indigo-600',
-      liveUrl: '#',
-      githubUrl: 'https://github.com/TusharSamaniya',
-    },
-  ];
-
   return (
     <section id="projects" className="section" ref={sectionRef}>
       <div className="container-custom">
@@ -91,51 +41,88 @@ export default function Projects() {
         {/* Heading */}
         <h2 className="section-heading text-center">My Work</h2>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Projects Container - One Per Row */}
+        <div className="space-y-16 max-w-6xl mx-auto">
           {projects.map((project, index) => (
             <div
-              key={index}
-              className={`card-base overflow-hidden transform transition-all duration-700 hover:shadow-glow-lg hover:-translate-y-1.5 ${
+              key={project.id}
+              className={`flex flex-col ${
+                index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
+              } gap-8 lg:gap-12 items-center transform transition-all duration-700 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
-              style={{ transitionDelay: `${index * 50}ms` }}
+              style={{ transitionDelay: `${index * 100}ms` }}
             >
-              {/* Gradient Banner */}
-              <div className={`h-40 bg-gradient-to-br ${project.gradient} flex items-center justify-center p-6`}>
-                <h3 className="text-2xl font-bold text-white text-center">{project.title}</h3>
+              {/* Video/Image Container */}
+              <div className="w-full lg:w-1/2">
+                <div className="relative overflow-hidden rounded-xl shadow-2xl h-64 md:h-72 lg:h-80 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center group hover:shadow-glow-lg transition-all duration-300">
+                  {project.videoUrl ? (
+                    <video
+                      src={project.videoUrl}
+                      className="w-full h-full object-cover"
+                      controls
+                      autoPlay
+                      muted
+                      loop
+                    />
+                  ) : (
+                    <div className="text-center p-6">
+                      <div className="text-5xl mb-4">🎥</div>
+                      <p className="text-slate-300 font-semibold">Screen Recording</p>
+                      <p className="text-xs text-slate-500 mt-2">Coming soon</p>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* Content */}
-              <div className="p-6">
-                <p className="text-slate-400 text-sm mb-4 line-clamp-3">{project.description}</p>
+              {/* Project Details */}
+              <div className="w-full lg:w-1/2">
+                {/* Project Name */}
+                <h3 className="text-3xl md:text-4xl font-bold mb-4 text-white">
+                  {project.name}
+                </h3>
 
-                {/* Tech Tags */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tech.map((tech, techIndex) => (
-                    <span key={techIndex} className="skill-badge text-xs">
-                      {tech}
-                    </span>
-                  ))}
+                {/* Description */}
+                <p className="text-slate-300 text-base md:text-lg mb-6 leading-relaxed">
+                  {project.description}
+                </p>
+
+                {/* Tech Stack */}
+                <div className="mb-8">
+                  <h4 className="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-widest">
+                    Tech Stack
+                  </h4>
+                  <div className="flex flex-wrap gap-3">
+                    {project.skills.map((skill, idx) => (
+                      <span
+                        key={idx}
+                        className="text-slate-300 text-sm font-medium"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
-                {/* Buttons */}
-                <div className="flex gap-3">
+                {/* Action Buttons */}
+                <div className="flex gap-4 pt-2">
                   <a
-                    href={project.liveUrl}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow"
+                    href={project.liveLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-glow transition-all duration-300 hover:scale-105"
                   >
-                    <FiExternalLink size={16} />
+                    <FiExternalLink size={18} />
                     Live Demo
                   </a>
                   <a
-                    href={project.githubUrl}
+                    href={project.githubLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-transparent border border-[rgba(255,255,255,0.15)] text-white rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-[rgba(255,255,255,0.05)] hover:border-[rgba(255,255,255,0.3)]"
+                    className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-glow transition-all duration-300 hover:scale-105"
                   >
-                    <FiGithub size={16} />
-                    GitHub
+                    <FiGithub size={18} />
+                    View Code
                   </a>
                 </div>
               </div>
