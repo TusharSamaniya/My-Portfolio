@@ -20,3 +20,30 @@ export const projects = [
     videoUrl: "/videos/airbnb-clone-demo.mp4",
   },
 ];
+
+export const miniProjects = [
+  {
+    id: 1,
+    name: "Mini Project 1",
+    description: "Description coming soon",
+    skills: [],
+    liveLink: "#",
+    githubLink: "#",
+  },
+  {
+    id: 2,
+    name: "Mini Project 2",
+    description: "Description coming soon",
+    skills: [],
+    liveLink: "#",
+    githubLink: "#",
+  },
+  {
+    id: 3,
+    name: "Mini Project 3",
+    description: "Description coming soon",
+    skills: [],
+    liveLink: "#",
+    githubLink: "#",
+  },
+];

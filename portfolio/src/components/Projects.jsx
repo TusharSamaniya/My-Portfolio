@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { FiGithub, FiExternalLink } from 'react-icons/fi';
-import { projects } from '../data/projects';
+import { projects, miniProjects } from '../data/projects';
 
 export default function Projects() {
   const sectionRef = useRef(null);
@@ -128,6 +128,67 @@ export default function Projects() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Mini Projects Section */}
+        <div className="mt-24">
+          <h2 className="section-heading text-center mb-12">Undeployed Mini Projects</h2>
+          
+          {/* Mini Projects Grid - Horizontal Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {miniProjects.map((project, index) => (
+              <div
+                key={project.id}
+                className={`card-base overflow-hidden transform transition-all duration-700 hover:shadow-glow-lg hover:-translate-y-1.5 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                }`}
+                style={{ transitionDelay: `${(projects.length + index) * 100}ms` }}
+              >
+                {/* Gradient Banner */}
+                <div className="h-40 bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center p-6">
+                  <h3 className="text-2xl font-bold text-white text-center">{project.name}</h3>
+                </div>
+
+                {/* Content */}
+                <div className="p-6">
+                  <p className="text-slate-400 text-sm mb-4 line-clamp-3">{project.description}</p>
+
+                  {/* Tech Tags */}
+                  {project.skills && project.skills.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {project.skills.map((tech, techIndex) => (
+                        <span key={techIndex} className="text-slate-300 text-xs font-medium">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Buttons */}
+                  <div className="flex gap-3">
+                    <a
+                      href={project.liveLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow"
+                    >
+                      <FiExternalLink size={16} />
+                      Live Demo
+                    </a>
+                    <a
+                      href={project.githubLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow"
+                    >
+                      <FiGithub size={16} />
+                      GitHub
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
