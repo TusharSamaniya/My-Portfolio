@@ -144,13 +144,36 @@ export default function Projects() {
                 }`}
                 style={{ transitionDelay: `${(projects.length + index) * 100}ms` }}
               >
-                {/* Gradient Banner */}
-                <div className="h-40 bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center p-6">
+              {/* Image/Video Banner */}
+              <div className="h-40 bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center p-0 overflow-hidden">
+                {project.videoUrl ? (
+                  <video
+                    src={project.videoUrl}
+                    className="w-full h-full object-cover"
+                    muted
+                    autoPlay
+                  />
+                ) : project.imageUrl ? (
+                  <img
+                    src={project.imageUrl}
+                    alt={project.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
                   <h3 className="text-2xl font-bold text-white text-center">{project.name}</h3>
-                </div>
+                )}
+              </div>
 
                 {/* Content */}
                 <div className="p-6">
+                  {(project.imageUrl || project.videoUrl) && (
+                    <div className="mb-3">
+                      <h3 className="text-xl font-bold text-white">{project.name}</h3>
+                      {project.subtitle && (
+                        <p className="text-xs text-slate-400 font-medium">{project.subtitle}</p>
+                      )}
+                    </div>
+                  )}
                   <p className="text-slate-400 text-sm mb-4 line-clamp-3">{project.description}</p>
 
                   {/* Tech Tags */}
@@ -167,22 +190,13 @@ export default function Projects() {
                   {/* Buttons */}
                   <div className="flex gap-3">
                     <a
-                      href={project.liveLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow"
-                    >
-                      <FiExternalLink size={16} />
-                      Live Demo
-                    </a>
-                    <a
                       href={project.githubLink}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow"
                     >
                       <FiGithub size={16} />
-                      GitHub
+                      View Code
                     </a>
                   </div>
                 </div>

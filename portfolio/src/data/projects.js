@@ -24,26 +24,29 @@ export const projects = [
 export const miniProjects = [
   {
     id: 1,
-    name: "Mini Project 1",
-    description: "Description coming soon",
-    skills: [],
-    liveLink: "#",
-    githubLink: "#",
+    name: "Aadhaar Enrolment Analytics",
+    description:
+      "A data-driven risk assessment framework built for the UIDAI Data Hackathon 2026 to identify identity coverage gaps across India. It features a custom composite scoring engine to prioritize districts by enrolment momentum and saturation, providing actionable insights to optimize infrastructure deployment and digital inclusion.",
+    skills: ["Python", "Pandas", "NumPy", "Matplotlib", "Seaborn", "Jupyter Notebooks"],
+    githubLink: "https://github.com/TusharSamaniya/UIDAI-hackathon.git",
+    imageUrl: "/images/projects/aadhaar-analytics.png",
   },
   {
     id: 2,
-    name: "Mini Project 2",
-    description: "Description coming soon",
-    skills: [],
-    liveLink: "#",
-    githubLink: "#",
+    name: "Our Voice Our Right",
+    subtitle: "Mahatma Gandhi National Rural Employment Guarantee Act",
+    description:
+      "Developed a data-driven backend system using Spring Boot that fetches and manages MGNREGA government data. It enables structured storage and easy access to district performance insights through REST APIs.",
+    skills: ["data.gov.in API", "Spring Boot", "MySQL", "Postman"],
+    githubLink: "https://github.com/TusharSamaniya/Our-Voice-Our-Right.git",
+    videoUrl: "/videos/our-voice-our-right-demo.mp4",
   },
   {
     id: 3,
     name: "Mini Project 3",
     description: "Description coming soon",
     skills: [],
-    liveLink: "#",
     githubLink: "#",
+    imageUrl: null,
   },
 ];
