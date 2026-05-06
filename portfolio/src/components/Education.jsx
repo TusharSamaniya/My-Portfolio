@@ -30,27 +30,33 @@ export default function Education() {
   const educationData = [
     {
       degree: 'Bachelor of Technology (B.Tech)',
-      institution: 'Technological Institute',
-      duration: '2021 - Present',
-      cgpa: '8.2/10',
+      institution: 'Echelon Institute of Technology',
+      duration: '2023-2027',
+      semester: '6th Semester',
       coursework: ['Data Structures', 'Database Management', 'Operating Systems', 'Computer Networks', 'OOP'],
-      certifications: ['AWS Certified Cloud Practitioner', 'Spring Boot Certification'],
+      certifications: ['AWS Certified Cloud Practitioner', 'MongoDB', 'Write Research paper on Recommendation system using graph database'],
     },
     {
-      degree: 'Advanced Java Programming',
+      degree: 'Java Learning Journey',
       institution: 'Online Learning Platform',
       duration: '2023 - 2024',
-      cgpa: null,
-      coursework: ['Spring Framework', 'Microservices', 'REST APIs', 'Spring Security'],
-      certifications: ['Oracle Java Certified Associate'],
+      coursework: ['2nd Semester: Core Java', '3rd Semester: Servlet JSP, JDBC', '4th Semester: Spring Framework', '5th Semester: Spring Boot', '6th Semester: Spring Boot Projects'],
+      certifications: [],
     },
     {
       degree: 'Cloud & DevOps',
       institution: 'Cloud Academy',
-      duration: '2024',
-      cgpa: null,
-      coursework: ['Docker', 'Kubernetes', 'CI/CD Pipelines', 'Infrastructure as Code'],
-      certifications: ['AWS Solutions Architect Associate', 'Docker Certified Associate'],
+      duration: '2025',
+      coursework: ['Docker', 'Kubernetes', 'CI/CD Pipelines', 'Infrastructure as Code', 'Python', 'AI Implementation'],
+      skills: [
+        { name: 'Docker', percentage: 80 },
+        { name: 'Kubernetes', percentage: 50 },
+        { name: 'CI/CD Pipeline', percentage: 90 },
+        { name: 'Infrastructure as Code', percentage: 60 },
+        { name: 'Python', percentage: 80 },
+        { name: 'AI Implementation', percentage: 95 },
+      ],
+      certifications: [],
     },
   ];
 
@@ -93,10 +99,15 @@ export default function Education() {
                   <p className="gradient-text font-semibold mb-2">{edu.institution}</p>
 
                   {/* Duration and CGPA */}
-                  <div className="flex gap-4 mb-4 text-sm">
+                  <div className="flex gap-4 mb-4 text-sm flex-wrap">
                     <span className="bg-[rgba(99,102,241,0.1)] text-accent-light px-3 py-1 rounded-full">
                       {edu.duration}
                     </span>
+                    {edu.semester && (
+                      <span className="bg-[rgba(99,102,241,0.1)] text-accent-light px-3 py-1 rounded-full">
+                        {edu.semester}
+                      </span>
+                    )}
                     {edu.cgpa && (
                       <span className="bg-[rgba(99,102,241,0.1)] text-accent-light px-3 py-1 rounded-full">
                         CGPA: {edu.cgpa}
@@ -118,8 +129,31 @@ export default function Education() {
                     </div>
                   )}
 
+                  {/* Skills with Percentage */}
+                  {edu.skills && edu.skills.length > 0 && (
+                    <div>
+                      <p className="text-slate-400 text-sm font-medium mb-3">Skills:</p>
+                      <div className="space-y-3">
+                        {edu.skills.map((skill, skillIndex) => (
+                          <div key={skillIndex}>
+                            <div className="flex justify-between items-center mb-1">
+                              <span className="text-accent-light text-sm">{skill.name}</span>
+                              <span className="text-accent-primary text-sm font-semibold">{skill.percentage}%</span>
+                            </div>
+                            <div className="w-full bg-slate-700 rounded-full h-2">
+                              <div
+                                className="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                                style={{ width: `${skill.percentage}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Certifications */}
-                  {edu.certifications.length > 0 && (
+                  {edu.certifications && edu.certifications.length > 0 && (
                     <div>
                       <p className="text-slate-400 text-sm font-medium mb-2">Certifications:</p>
                       <div className="space-y-1">
