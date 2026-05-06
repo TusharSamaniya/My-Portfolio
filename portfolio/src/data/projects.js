@@ -41,12 +41,4 @@ export const miniProjects = [
     githubLink: "https://github.com/TusharSamaniya/Our-Voice-Our-Right.git",
     videoUrl: "/videos/our-voice-our-right-demo.mp4",
   },
-  {
-    id: 3,
-    name: "Mini Project 3",
-    description: "Description coming soon",
-    skills: [],
-    githubLink: "#",
-    imageUrl: null,
-  },
 ];

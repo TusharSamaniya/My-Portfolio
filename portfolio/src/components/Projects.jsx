@@ -135,7 +135,7 @@ export default function Projects() {
           <h2 className="section-heading text-center mb-12">Undeployed Mini Projects</h2>
           
           {/* Mini Projects Grid - Horizontal Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-20 max-w-4xl mx-auto">
             {miniProjects.map((project, index) => (
               <div
                 key={project.id}
