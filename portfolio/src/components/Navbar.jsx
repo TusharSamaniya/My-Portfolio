@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { slideDownVariant, containerVariant, itemVariant } from '../utils/animations';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -7,7 +9,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 80);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -22,8 +24,11 @@ export default function Navbar() {
   ];
 
   return (
-    <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+    <motion.nav
+      initial="hidden"
+      animate="visible"
+      variants={slideDownVariant}
+      className={`fixed top-0 w-full z-50 transition-all duration-400 ${
         isScrolled ? 'bg-[rgba(10,10,15,0.9)] backdrop-blur-xl border-b border-[rgba(255,255,255,0.07)]' : 'bg-transparent'
       }`}
       style={{ paddingTop: '1rem', paddingBottom: '1rem' }}
@@ -36,28 +41,39 @@ export default function Navbar() {
           </a>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-12">
+          <motion.div
+            className="hidden md:flex items-center gap-12"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariant}
+          >
             {navLinks.map((link) => (
-              <a
+              <motion.a
                 key={link.name}
                 href={link.href}
-                className="text-slate-400 hover:text-white transition-colors duration-300 font-medium text-sm"
+                className="nav-link text-slate-400 hover:text-white transition-colors duration-300 font-medium text-sm will-transform"
+                variants={itemVariant}
               >
                 {link.name}
-              </a>
+              </motion.a>
             ))}
-          </div>
+          </motion.div>
 
           {/* Resume Button */}
-          <div className="hidden md:block">
+          <motion.div
+            className="hidden md:block"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+          >
             <a
               href="/resume.pdf"
               download
-              className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold text-sm transition-all duration-300"
+              className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5"
             >
               Download Resume
             </a>
-          </div>
+          </motion.div>
 
           {/* Mobile Menu */}
           <button
@@ -70,7 +86,13 @@ export default function Navbar() {
 
         {/* Mobile Dropdown */}
         {isOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-[rgba(10,10,15,0.95)] backdrop-blur-xl border-b border-[rgba(255,255,255,0.07)] py-4">
+          <motion.div
+            className="md:hidden absolute top-16 left-0 right-0 bg-[rgba(10,10,15,0.95)] backdrop-blur-xl border-b border-[rgba(255,255,255,0.07)] py-4 origin-top"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.35 }}
+          >
             <div className="flex flex-col gap-4 px-4">
               {navLinks.map((link) => (
                 <a
@@ -86,9 +108,9 @@ export default function Navbar() {
                 Download Resume
               </a>
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
-    </nav>
+    </motion.nav>
   );
 }

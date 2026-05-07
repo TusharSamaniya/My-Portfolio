@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { FiMail, FiLinkedin, FiGithub, FiSend } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { fadeUpVariant, slideInLeft, slideInRight } from '../utils/animations';
 
 export default function Contact() {
   const sectionRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState('');
   const [copied, setCopied] = useState(false);
+  const submitButtonRef = useRef(null);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText('tusharsamaniya.me@gmail.com');
@@ -18,7 +20,6 @@ export default function Contact() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsVisible(true);
           observer.unobserve(entry.target);
         }
       },
@@ -45,8 +46,6 @@ export default function Contact() {
     e.preventDefault();
     setStatus('sending');
     
-    console.log('📨 Sending email with data:', formData);
-    
     try {
       const response = await fetch('http://localhost:5000/api/send-email', {
         method: 'POST',
@@ -56,23 +55,18 @@ export default function Contact() {
         body: JSON.stringify(formData),
       });
 
-      console.log('Response status:', response.status);
       const data = await response.json();
-      console.log('Response data:', data);
 
       if (response.ok && data.success) {
         setStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
         setTimeout(() => setStatus(''), 3000);
       } else {
-        console.error('Email send failed:', data.error);
         setStatus('error');
         setTimeout(() => setStatus(''), 3000);
       }
     } catch (error) {
       console.error('❌ Error sending email:', error);
-      console.error('   This usually means the backend server is not running.');
-      console.error('   Make sure you ran: npm run dev (from root folder)');
       setStatus('error');
       setTimeout(() => setStatus(''), 3000);
     }
@@ -88,164 +82,206 @@ export default function Contact() {
     <section id="contact" className="section" ref={sectionRef}>
       <div className="container-custom">
         {/* Section Label */}
-        <div className="flex items-center justify-center gap-4 mb-6">
+        <motion.div
+          className="flex items-center justify-center gap-4 mb-6 will-transform"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={fadeUpVariant}
+        >
           <div className="w-8 h-0.5 bg-gradient-to-r from-transparent to-accent-primary"></div>
           <span className="section-label">CONTACT</span>
           <div className="w-8 h-0.5 bg-gradient-to-l from-transparent to-accent-primary"></div>
-        </div>
+        </motion.div>
 
         {/* Heading */}
-        <h2 className="section-heading text-center">Get In Touch</h2>
+        <motion.h2
+          className="section-heading text-center will-transform"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={fadeUpVariant}
+        >
+          Get In Touch
+        </motion.h2>
 
         {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left Column - Contact Info */}
-          <div className={`transform transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <p className="text-slate-400 mb-8 text-lg leading-relaxed">
-              Have a question or want to work together? I'd love to hear from you.
-              Drop me a message and I'll get back to you as soon as possible.
-            </p>
-
-            {/* Contact Info Cards */}
-            <div className="space-y-4">
-              {contactInfo.map((info, index) => {
-                const IconComponent = info.icon;
-                
-                // Special handling for email with copy button
-                if (info.label === 'Email') {
-                  return (
-                    <div
-                      key={index}
-                      className="flex items-center gap-4 p-4 card-base group transition-all duration-300"
-                    >
-                      <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-3 rounded-lg group-hover:shadow-glow transition-all duration-300">
-                        <IconComponent size={24} className="text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-slate-500 text-sm">{info.label}</p>
-                        <p className="gradient-text font-semibold">{info.value}</p>
-                      </div>
-                      <button
-                        onClick={handleCopyEmail}
-                        className={`px-3 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
-                          copied
-                            ? 'bg-green-600 text-white'
-                            : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                        }`}
-                      >
-                        {copied ? '✓ Copied' : 'Copy'}
-                      </button>
-                    </div>
-                  );
-                }
-                
-                // Regular links for LinkedIn and GitHub
-                return (
-                  <a
-                    key={index}
-                    href={info.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-4 p-4 card-base group transition-all duration-300"
-                  >
-                    <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-3 rounded-lg group-hover:shadow-glow transition-all duration-300">
-                      <IconComponent size={24} className="text-white" />
-                    </div>
-                    <div>
-                      <p className="text-slate-500 text-sm">{info.label}</p>
-                      <p className="gradient-text font-semibold">{info.value}</p>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          </div>
+          <motion.div
+            className="space-y-6 will-transform"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.12,
+                  delayChildren: 0.1,
+                },
+              },
+            }}
+          >
+            {contactInfo.map((info, index) => {
+              const IconComponent = info.icon;
+              return (
+                <motion.a
+                  key={index}
+                  href={info.link}
+                  target={info.label !== 'Email' ? '_blank' : '_self'}
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-6 rounded-xl card-base will-transform cursor-pointer group"
+                  variants={slideInLeft}
+                  whileHover={{
+                    x: 6,
+                    borderColor: 'rgba(99,102,241,0.3)',
+                    boxShadow: '0 0 30px rgba(99,102,241,0.1)',
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition-all duration-300">
+                    <IconComponent size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="text-slate-400 text-sm font-medium">{info.label}</p>
+                    <p className="text-white font-semibold">{info.value}</p>
+                  </div>
+                </motion.a>
+              );
+            })}
+          </motion.div>
 
           {/* Right Column - Contact Form */}
-          <form
+          <motion.form
             onSubmit={handleSubmit}
-            className={`transform transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-            style={{ transitionDelay: '100ms' }}
+            className="space-y-6 will-transform"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={slideInRight}
+            transition={{ delay: 0.2 }}
           >
-            <div className="space-y-4">
-              {/* Name Input */}
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  placeholder="Your name"
-                  className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-accent-primary focus:shadow-glow focus:ring-0 transition-all duration-300"
-                />
-              </div>
+            {/* Name Input */}
+            <motion.div
+              whileFocus={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 bg-[#0f0f1a] border border-[rgba(255,255,255,0.1)] rounded-lg text-white placeholder-slate-500 focus:outline-none form-input-focus transition-all duration-300"
+              />
+            </motion.div>
 
-              {/* Email Input */}
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="your.email@example.com"
-                  className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-accent-primary focus:shadow-glow focus:ring-0 transition-all duration-300"
-                />
-              </div>
+            {/* Email Input */}
+            <motion.div
+              whileFocus={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 bg-[#0f0f1a] border border-[rgba(255,255,255,0.1)] rounded-lg text-white placeholder-slate-500 focus:outline-none form-input-focus transition-all duration-300"
+              />
+            </motion.div>
 
-              {/* Subject Input */}
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Subject</label>
-                <input
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  placeholder="What's this about?"
-                  className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-accent-primary focus:shadow-glow focus:ring-0 transition-all duration-300"
-                />
-              </div>
+            {/* Subject Input */}
+            <motion.div
+              whileFocus={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <input
+                type="text"
+                name="subject"
+                placeholder="Subject"
+                value={formData.subject}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 bg-[#0f0f1a] border border-[rgba(255,255,255,0.1)] rounded-lg text-white placeholder-slate-500 focus:outline-none form-input-focus transition-all duration-300"
+              />
+            </motion.div>
 
-              {/* Message Textarea */}
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Message</label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  placeholder="Your message here..."
-                  rows="5"
-                  className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-accent-primary focus:shadow-glow focus:ring-0 transition-all duration-300 resize-none"
-                ></textarea>
-              </div>
+            {/* Message Input */}
+            <motion.div
+              whileFocus={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <textarea
+                name="message"
+                placeholder="Your Message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                rows="4"
+                className="w-full px-4 py-3 bg-[#0f0f1a] border border-[rgba(255,255,255,0.1)] rounded-lg text-white placeholder-slate-500 focus:outline-none form-input-focus transition-all duration-300 resize-none"
+              ></textarea>
+            </motion.div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={status === 'sending'}
-                className="w-full btn-primary flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                <span>{status === 'sending' ? 'Sending...' : 'Send Message'}</span>
-                <FiSend size={18} />
-              </button>
-
-              {/* Status Messages */}
-              {status === 'success' && (
-                <p className="text-center text-green-400 text-sm">
-                  ✓ Message sent successfully! I'll get back to you soon.
-                </p>
+            {/* Submit Button */}
+            <motion.button
+              ref={submitButtonRef}
+              type="submit"
+              className={`w-full px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 will-transform ${
+                status === 'success'
+                  ? 'bg-green-600 text-white'
+                  : status === 'error'
+                  ? 'bg-red-600 text-white'
+                  : 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
+              }`}
+              disabled={status === 'sending'}
+              whileHover={
+                status === ''
+                  ? {
+                      y: -3,
+                      boxShadow: '0 8px 30px rgba(99,102,241,0.5)',
+                    }
+                  : {}
+              }
+              whileTap={
+                status === ''
+                  ? {
+                      y: 0,
+                      scale: 0.98,
+                    }
+                  : {}
+              }
+              transition={{ duration: 0.3 }}
+            >
+              {status === 'sending' ? (
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                    className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                  />
+                  Sending...
+                </>
+              ) : status === 'success' ? (
+                <>
+                  ✓ Message Sent!
+                </>
+              ) : status === 'error' ? (
+                <>
+                  ✗ Error Sending
+                </>
+              ) : (
+                <>
+                  <FiSend size={18} />
+                  Send Message
+                </>
               )}
-              {status === 'error' && (
-                <p className="text-center text-red-400 text-sm">
-                  ✗ Failed to send message. Please try again or contact me directly.
-                </p>
-              )}
-            </div>
-          </form>
+            </motion.button>
+          </motion.form>
         </div>
       </div>
     </section>
