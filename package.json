@@ -1,0 +1,17 @@
+{
+  "name": "tushar-portfolio",
+  "version": "1.0.0",
+  "description": "Tushar Samaniya's Portfolio Website",
+  "type": "module",
+  "scripts": {
+    "install-all": "npm install && cd portfolio && npm install && cd ../backend && npm install",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd portfolio && npm run dev\"",
+    "dev:frontend": "cd portfolio && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "cd portfolio && npm run build",
+    "preview": "cd portfolio && npm run preview"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

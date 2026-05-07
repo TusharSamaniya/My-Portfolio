@@ -6,6 +6,13 @@ export default function Contact() {
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText('tusharsamaniya.me@gmail.com');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -38,18 +45,43 @@ export default function Contact() {
     e.preventDefault();
     setStatus('sending');
     
-    // Simulate form submission
-    setTimeout(() => {
-      setStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+    console.log('📨 Sending email with data:', formData);
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      console.log('Response status:', response.status);
+      const data = await response.json();
+      console.log('Response data:', data);
+
+      if (response.ok && data.success) {
+        setStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setTimeout(() => setStatus(''), 3000);
+      } else {
+        console.error('Email send failed:', data.error);
+        setStatus('error');
+        setTimeout(() => setStatus(''), 3000);
+      }
+    } catch (error) {
+      console.error('❌ Error sending email:', error);
+      console.error('   This usually means the backend server is not running.');
+      console.error('   Make sure you ran: npm run dev (from root folder)');
+      setStatus('error');
       setTimeout(() => setStatus(''), 3000);
-    }, 1000);
+    }
   };
 
   const contactInfo = [
-    { icon: FiMail, label: 'Email', value: 'your.email@example.com', link: 'mailto:your.email@example.com' },
-    { icon: FiLinkedin, label: 'LinkedIn', value: 'linkedin.com/in/tushar', link: 'https://linkedin.com/in/tushar' },
-    { icon: FiGithub, label: 'GitHub', value: 'github.com/TusharSamaniya', link: 'https://github.com/TusharSamaniya' },
+    { icon: FiMail, label: 'Email', value: 'tusharsamaniya.me@gmail.com', link: 'mailto:tusharsamaniya.me@gmail.com' },
+    { icon: FiLinkedin, label: 'LinkedIn', value: 'tushar-samaniya-4b69b1290', link: 'https://www.linkedin.com/in/tushar-samaniya-4b69b1290/' },
+    { icon: FiGithub, label: 'GitHub', value: 'TusharSamaniya', link: 'https://github.com/TusharSamaniya' },
   ];
 
   return (
@@ -78,6 +110,36 @@ export default function Contact() {
             <div className="space-y-4">
               {contactInfo.map((info, index) => {
                 const IconComponent = info.icon;
+                
+                // Special handling for email with copy button
+                if (info.label === 'Email') {
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-center gap-4 p-4 card-base group transition-all duration-300"
+                    >
+                      <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-3 rounded-lg group-hover:shadow-glow transition-all duration-300">
+                        <IconComponent size={24} className="text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-slate-500 text-sm">{info.label}</p>
+                        <p className="gradient-text font-semibold">{info.value}</p>
+                      </div>
+                      <button
+                        onClick={handleCopyEmail}
+                        className={`px-3 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
+                          copied
+                            ? 'bg-green-600 text-white'
+                            : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                        }`}
+                      >
+                        {copied ? '✓ Copied' : 'Copy'}
+                      </button>
+                    </div>
+                  );
+                }
+                
+                // Regular links for LinkedIn and GitHub
                 return (
                   <a
                     key={index}
@@ -175,6 +237,11 @@ export default function Contact() {
               {status === 'success' && (
                 <p className="text-center text-green-400 text-sm">
                   ✓ Message sent successfully! I'll get back to you soon.
+                </p>
+              )}
+              {status === 'error' && (
+                <p className="text-center text-red-400 text-sm">
+                  ✗ Failed to send message. Please try again or contact me directly.
                 </p>
               )}
             </div>
