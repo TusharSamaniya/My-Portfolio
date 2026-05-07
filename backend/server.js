@@ -13,7 +13,7 @@ app.use(express.json());
 
 // Gmail configuration
 const GMAIL_USER = process.env.GMAIL_USER || 'tusharsamaniya.me@gmail.com';
-const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD || 'appslodaudfgutsakafm';
+const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD || 'whlx bjyz yyxh eajw';
 
 console.log(`📧 Gmail configured for: ${GMAIL_USER}`);
 
