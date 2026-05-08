@@ -15,6 +15,38 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleDownloadResume = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/download-resume');
+      
+      if (!response.ok) {
+        throw new Error('Failed to download resume');
+      }
+
+      // Get the blob from the response
+      const blob = await response.blob();
+      
+      // Create a temporary URL for the blob
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create an anchor element and trigger the download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Tushar Samaniya Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      console.log('✅ Resume downloaded successfully');
+    } catch (error) {
+      console.error('❌ Error downloading resume:', error);
+      alert('Failed to download resume. Please try again.');
+    }
+  };
+
   const navLinks = [
     { name: 'About', href: '#about' },
     { name: 'Skills', href: '#skills' },
@@ -66,13 +98,12 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <a
-              href="/resume.pdf"
-              download
+            <button
+              onClick={handleDownloadResume}
               className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5"
             >
               Download Resume
-            </a>
+            </button>
           </motion.div>
 
           {/* Mobile Menu */}
@@ -104,9 +135,15 @@ export default function Navbar() {
                   {link.name}
                 </a>
               ))}
-              <a href="/resume.pdf" download className="mt-2 px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold text-sm text-center">
+              <button 
+                onClick={() => {
+                  handleDownloadResume();
+                  setIsOpen(false);
+                }}
+                className="mt-2 px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold text-sm text-center"
+              >
                 Download Resume
-              </a>
+              </button>
             </div>
           </motion.div>
         )}
