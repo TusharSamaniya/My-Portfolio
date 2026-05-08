@@ -126,11 +126,49 @@ export default function Contact() {
           >
             {contactInfo.map((info, index) => {
               const IconComponent = info.icon;
+              
+              // Special handling for email with copy button
+              if (info.label === 'Email') {
+                return (
+                  <motion.div
+                    key={index}
+                    className="flex items-center gap-4 p-6 rounded-xl card-base will-transform group"
+                    variants={slideInLeft}
+                    whileHover={{
+                      borderColor: 'rgba(99,102,241,0.3)',
+                      boxShadow: '0 0 30px rgba(99,102,241,0.1)',
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition-all duration-300">
+                      <IconComponent size={20} className="text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-slate-400 text-sm font-medium">{info.label}</p>
+                      <p className="text-white font-semibold">{info.value}</p>
+                    </div>
+                    <motion.button
+                      onClick={handleCopyEmail}
+                      className={`px-3 py-2 rounded-lg font-medium text-sm transition-all duration-300 whitespace-nowrap ${
+                        copied
+                          ? 'bg-green-600 text-white'
+                          : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                      }`}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {copied ? '✓ Copied' : 'Copy'}
+                    </motion.button>
+                  </motion.div>
+                );
+              }
+              
+              // Regular links for LinkedIn and GitHub
               return (
                 <motion.a
                   key={index}
                   href={info.link}
-                  target={info.label !== 'Email' ? '_blank' : '_self'}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-6 rounded-xl card-base will-transform cursor-pointer group"
                   variants={slideInLeft}

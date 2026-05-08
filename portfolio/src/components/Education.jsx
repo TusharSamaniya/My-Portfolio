@@ -92,9 +92,10 @@ export default function Education() {
         <div className="max-w-3xl mx-auto relative">
           {/* Timeline Line */}
           <motion.div
-            className={`timeline-line absolute left-0 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 md:transform md:-translate-x-1/2 ${
-              timelineVisible ? 'visible' : ''
-            }`}
+            className="absolute left-0 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 md:transform md:-translate-x-1/2"
+            initial={{ height: 0 }}
+            animate={{ height: timelineVisible ? '100%' : 0 }}
+            transition={{ duration: 1.2, ease: 'easeOut' }}
           ></motion.div>
 
           {/* Education Cards */}

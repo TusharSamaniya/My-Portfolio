@@ -3,26 +3,55 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
 export default function Hero() {
-  const [typedText, setTypedText] = useState('');
-  const fullText = 'Full Stack Developer & Software Engineer';
   const [particlePositions, setParticlePositions] = useState([]);
 
+  // Cycling job titles animation
+  const jobTitles = ['software engineer', 'Full Stack Developer', 'Java Developer'];
+  const [cyclingText, setCyclingText] = useState('');
+  const [jobTitleIndex, setJobTitleIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+
+  // Cycling job titles effect
   useEffect(() => {
-    // Typewriter effect
-    let index = 0;
-    const typeTimer = setTimeout(() => {
-      const interval = setInterval(() => {
-        if (index <= fullText.length) {
-          setTypedText(fullText.slice(0, index));
-          index++;
-        } else {
-          clearInterval(interval);
-        }
-      }, 30);
-      return () => clearInterval(interval);
-    }, 700);
-    return () => clearTimeout(typeTimer);
-  }, []);
+    const currentJobTitle = jobTitles[jobTitleIndex];
+    const fullCyclingText = `I am ${currentJobTitle}`;
+    
+    const typeSpeed = 50;
+    const deleteSpeed = 30;
+    const pauseTime = 2000;
+    
+    let timeout;
+    
+    if (!isDeleting) {
+      // Typing phase
+      if (cyclingText.length < fullCyclingText.length) {
+        timeout = setTimeout(() => {
+          setCyclingText(fullCyclingText.slice(0, cyclingText.length + 1));
+        }, typeSpeed);
+      } else {
+        // Pause before deleting
+        timeout = setTimeout(() => {
+          setIsDeleting(true);
+        }, pauseTime);
+      }
+    } else {
+      // Deleting phase - delete until "I am "
+      const baseText = 'I am ';
+      if (cyclingText.length > baseText.length) {
+        timeout = setTimeout(() => {
+          setCyclingText(cyclingText.slice(0, cyclingText.length - 1));
+        }, deleteSpeed);
+      } else {
+        // Move to next job title
+        setIsDeleting(false);
+        setJobTitleIndex((prev) => (prev + 1) % jobTitles.length);
+        setCyclingText('I am ');
+      }
+    }
+    
+    return () => clearTimeout(timeout);
+  }, [cyclingText, isDeleting, jobTitleIndex, jobTitles]);
 
   useEffect(() => {
     // Generate random particle positions
@@ -48,6 +77,38 @@ export default function Hero() {
     const elem = document.getElementById('projects');
     if (elem) {
       elem.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleDownloadResume = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/download-resume');
+      
+      if (!response.ok) {
+        throw new Error('Failed to download resume');
+      }
+
+      // Get the blob from the response
+      const blob = await response.blob();
+      
+      // Create a temporary URL for the blob
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create an anchor element and trigger the download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Tushar Samaniya Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      console.log('✅ Resume downloaded successfully');
+    } catch (error) {
+      console.error('❌ Error downloading resume:', error);
+      alert('Failed to download resume. Please try again.');
     }
   };
 
@@ -144,15 +205,15 @@ export default function Hero() {
           </span>
         </motion.h1>
 
-        {/* Subtitle with Typewriter */}
+        {/* Cycling Job Titles */}
         <motion.div
           className="h-16 mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.7 }}
         >
-          <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-300 will-transform">
-            {typedText}
+          <p className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent will-transform">
+            {cyclingText}
             <span className="inline-block w-1 h-10 sm:h-12 lg:h-14 ml-1 bg-indigo-500 animate-blink"></span>
           </p>
         </motion.div>
@@ -184,8 +245,11 @@ export default function Hero() {
             <FiExternalLink size={20} />
           </motion.button>
           <motion.a
-            href="/resume.pdf"
-            download
+            href="#download-resume"
+            onClick={(e) => {
+              e.preventDefault();
+              handleDownloadResume();
+            }}
             className="px-8 py-3 bg-transparent border border-[rgba(255,255,255,0.15)] text-white rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover:bg-[rgba(255,255,255,0.05)]"
             whileHover={{ y: -3 }}
             transition={{ duration: 0.3 }}

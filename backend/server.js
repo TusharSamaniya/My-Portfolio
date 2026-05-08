@@ -2,8 +2,15 @@ import express from 'express';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 dotenv.config();
+
+// Get __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -155,6 +162,56 @@ app.post('/api/test-email', async (req, res) => {
     res.status(500).json({ 
       success: false, 
       error: error.message 
+    });
+  }
+});
+
+// Resume download endpoint
+app.get('/api/download-resume', (req, res) => {
+  const resumePath = path.join(__dirname, '../public/resume.pdf');
+  
+  // Check if file exists
+  if (!fs.existsSync(resumePath)) {
+    console.error('❌ Resume file not found at:', resumePath);
+    return res.status(404).json({ 
+      success: false, 
+      error: 'Resume file not found' 
+    });
+  }
+
+  try {
+    console.log('📥 Downloading resume...');
+    
+    // Set response headers for download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename="Tushar Samaniya Resume.pdf"');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
+    // Send the file
+    const fileStream = fs.createReadStream(resumePath);
+    fileStream.pipe(res);
+
+    fileStream.on('error', (error) => {
+      console.error('❌ Error streaming resume file:', error.message);
+      if (!res.headersSent) {
+        res.status(500).json({ 
+          success: false, 
+          error: 'Error downloading resume' 
+        });
+      }
+    });
+
+    fileStream.on('end', () => {
+      console.log('✅ Resume downloaded successfully');
+    });
+
+  } catch (error) {
+    console.error('❌ Resume download error:', error.message);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Error downloading resume' 
     });
   }
 });
