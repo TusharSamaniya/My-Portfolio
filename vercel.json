@@ -1,15 +1,24 @@
 {
+  "version": 2,
   "builds": [
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node"
+    },
     {
       "src": "portfolio/package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "dist" }
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/api/(.*)",
+      "dest": "/backend/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/portfolio/$1"
     }
   ]
 }
