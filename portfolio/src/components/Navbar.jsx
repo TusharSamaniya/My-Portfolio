@@ -17,14 +17,21 @@ export default function Navbar() {
 
   const handleDownloadResume = async () => {
     try {
+      console.log('📥 Initiating resume download...');
       const response = await fetch('http://localhost:5000/api/download-resume');
       
       if (!response.ok) {
-        throw new Error('Failed to download resume');
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       // Get the blob from the response
       const blob = await response.blob();
+      
+      if (blob.size === 0) {
+        throw new Error('Empty file received');
+      }
+      
+      console.log(`📦 Received blob of size: ${blob.size} bytes`);
       
       // Create a temporary URL for the blob
       const url = window.URL.createObjectURL(blob);
@@ -33,17 +40,20 @@ export default function Navbar() {
       const link = document.createElement('a');
       link.href = url;
       link.download = 'Tushar Samaniya Resume.pdf';
+      link.style.display = 'none';
       document.body.appendChild(link);
       link.click();
       
-      // Clean up
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      // Clean up after a short delay to ensure download starts
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100);
       
       console.log('✅ Resume downloaded successfully');
     } catch (error) {
       console.error('❌ Error downloading resume:', error);
-      alert('Failed to download resume. Please try again.');
+      alert(`Failed to download resume: ${error.message}`);
     }
   };
 

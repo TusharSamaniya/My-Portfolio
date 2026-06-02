@@ -182,9 +182,12 @@ app.get('/api/download-resume', (req, res) => {
   try {
     console.log('📥 Downloading resume...');
     
+    // Get file size
+    const stats = fs.statSync(resumePath);
+    
     // Set response headers for download
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename="Tushar Samaniya Resume.pdf"');
+    res.setHeader('Content-Length', stats.size);
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
