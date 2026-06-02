@@ -83,7 +83,10 @@ export default function Hero() {
   const handleDownloadResume = async () => {
     try {
       console.log('📥 Initiating resume download...');
-      const response = await fetch('http://localhost:5000/api/download-resume');
+      
+      // Use relative URL for API calls - works on both local and Vercel
+      const apiUrl = import.meta.env.VITE_API_URL || window.location.origin;
+      const response = await fetch(`${apiUrl}/api/download-resume`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
