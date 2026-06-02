@@ -15,6 +15,56 @@ const isYouTubeUrl = (url) => {
   return url && (url.includes('youtube.com') || url.includes('youtu.be'));
 };
 
+// YouTube embed component with autoplay and 1.5x speed
+const YouTubeEmbed = ({ videoId, className = '' }) => {
+  const iframeRef = useRef(null);
+
+  useEffect(() => {
+    // Load YouTube IFrame API
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // Function to set playback rate
+    const setPlaybackRate = () => {
+      if (iframeRef.current && window.YT && window.YT.Player) {
+        try {
+          const player = new window.YT.Player(iframeRef.current, {
+            events: {
+              onReady: (event) => {
+                event.target.setPlaybackRate(1.5);
+              },
+            },
+          });
+        } catch (e) {
+          console.log('Playback rate setting in progress or not available');
+        }
+      }
+    };
+
+    // Wait for YouTube API to load
+    if (window.YT) {
+      setPlaybackRate();
+    } else {
+      window.onYouTubeIframeAPIReady = setPlaybackRate;
+    }
+  }, [videoId]);
+
+  return (
+    <iframe
+      ref={iframeRef}
+      width="100%"
+      height="100%"
+      src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`}
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      className={`w-full h-full ${className}`}
+    />
+  );
+};
+
 export default function Projects() {
   const sectionRef = useRef(null);
 
@@ -96,15 +146,7 @@ export default function Projects() {
                 >
                 {project.videoUrl ? (
                     isYouTubeUrl(project.videoUrl) ? (
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        src={`https://www.youtube.com/embed/${getYouTubeVideoId(project.videoUrl)}`}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-full"
-                      />
+                      <YouTubeEmbed videoId={getYouTubeVideoId(project.videoUrl)} />
                     ) : (
                       <video
                         src={project.videoUrl}
@@ -225,15 +267,7 @@ export default function Projects() {
                 <div className="h-40 bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center p-0 overflow-hidden">
                   {project.videoUrl ? (
                     isYouTubeUrl(project.videoUrl) ? (
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        src={`https://www.youtube.com/embed/${getYouTubeVideoId(project.videoUrl)}`}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-full"
-                      />
+                      <YouTubeEmbed videoId={getYouTubeVideoId(project.videoUrl)} />
                     ) : (
                       <video
                         src={project.videoUrl}
