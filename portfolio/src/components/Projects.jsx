@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FiGithub, FiExternalLink } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { projects, miniProjects } from '../data/projects';
@@ -18,15 +18,42 @@ const isYouTubeUrl = (url) => {
 // YouTube embed component with autoplay and 1.5x speed
 const YouTubeEmbed = ({ videoId, className = '' }) => {
   const iframeRef = useRef(null);
+  const [shouldAutoplay, setShouldAutoplay] = useState(false);
 
   useEffect(() => {
+    // Intersection Observer to trigger autoplay when element comes into view
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldAutoplay(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (iframeRef.current) {
+      observer.observe(iframeRef.current);
+    }
+
+    return () => {
+      if (iframeRef.current) {
+        observer.unobserve(iframeRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!shouldAutoplay) return;
+
     // Load YouTube IFrame API
     const tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
     const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
 
-    // Function to set playback rate
+    // Function to set playback rate and hide controls
     const setPlaybackRate = () => {
       if (iframeRef.current && window.YT && window.YT.Player) {
         try {
@@ -34,6 +61,7 @@ const YouTubeEmbed = ({ videoId, className = '' }) => {
             events: {
               onReady: (event) => {
                 event.target.setPlaybackRate(1.5);
+                event.target.playVideo();
               },
             },
           });
@@ -49,19 +77,26 @@ const YouTubeEmbed = ({ videoId, className = '' }) => {
     } else {
       window.onYouTubeIframeAPIReady = setPlaybackRate;
     }
-  }, [videoId]);
+  }, [shouldAutoplay, videoId]);
+
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?${
+    shouldAutoplay ? 'autoplay=1' : 'autoplay=0'
+  }&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&controls=1&fs=1`;
 
   return (
-    <iframe
-      ref={iframeRef}
-      width="100%"
-      height="100%"
-      src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`}
-      frameBorder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen
-      className={`w-full h-full ${className}`}
-    />
+    <div className={`relative w-full h-full ${className}`} style={{ background: '#000' }}>
+      <iframe
+        ref={iframeRef}
+        width="100%"
+        height="100%"
+        src={embedUrl}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        className="w-full h-full"
+        style={{ position: 'absolute', top: 0, left: 0 }}
+      />
+    </div>
   );
 };
 
