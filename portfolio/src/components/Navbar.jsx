@@ -15,46 +15,8 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleDownloadResume = async () => {
-    try {
-      console.log('📥 Initiating resume download...');
-      const response = await fetch('http://localhost:5000/api/download-resume');
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // Get the blob from the response
-      const blob = await response.blob();
-      
-      if (blob.size === 0) {
-        throw new Error('Empty file received');
-      }
-      
-      console.log(`📦 Received blob of size: ${blob.size} bytes`);
-      
-      // Create a temporary URL for the blob
-      const url = window.URL.createObjectURL(blob);
-      
-      // Create an anchor element and trigger the download
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'Tushar Samaniya Resume.pdf';
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      
-      // Clean up after a short delay to ensure download starts
-      setTimeout(() => {
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      }, 100);
-      
-      console.log('✅ Resume downloaded successfully');
-    } catch (error) {
-      console.error('❌ Error downloading resume:', error);
-      alert(`Failed to download resume: ${error.message}`);
-    }
+  const handleViewResume = () => {
+    window.open('https://pdflink.to/10d7ad26/', '_blank');
   };
 
   const navLinks = [
@@ -109,10 +71,10 @@ export default function Navbar() {
             transition={{ duration: 0.5, delay: 0.5 }}
           >
             <button
-              onClick={handleDownloadResume}
+              onClick={handleViewResume}
               className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5"
             >
-              Download Resume
+              View Resume
             </button>
           </motion.div>
 
@@ -147,12 +109,12 @@ export default function Navbar() {
               ))}
               <button 
                 onClick={() => {
-                  handleDownloadResume();
+                  handleViewResume();
                   setIsOpen(false);
                 }}
                 className="mt-2 px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold text-sm text-center"
               >
-                Download Resume
+                View Resume
               </button>
             </div>
           </motion.div>
