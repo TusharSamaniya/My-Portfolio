@@ -4,6 +4,17 @@ import { motion } from 'framer-motion';
 import { projects, miniProjects } from '../data/projects';
 import { fadeUpVariant, scaleUpVariant } from '../utils/animations';
 
+// Helper function to extract YouTube video ID
+const getYouTubeVideoId = (url) => {
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+};
+
+// Helper function to check if URL is YouTube
+const isYouTubeUrl = (url) => {
+  return url && (url.includes('youtube.com') || url.includes('youtu.be'));
+};
+
 export default function Projects() {
   const sectionRef = useRef(null);
 
@@ -83,15 +94,27 @@ export default function Projects() {
                   }}
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  {project.videoUrl ? (
-                    <video
-                      src={project.videoUrl}
-                      className="w-full h-full object-cover"
-                      controls
-                      autoPlay
-                      muted
-                      loop
-                    />
+                {project.videoUrl ? (
+                    isYouTubeUrl(project.videoUrl) ? (
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        src={`https://www.youtube.com/embed/${getYouTubeVideoId(project.videoUrl)}`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full"
+                      />
+                    ) : (
+                      <video
+                        src={project.videoUrl}
+                        className="w-full h-full object-cover"
+                        controls
+                        autoPlay
+                        muted
+                        loop
+                      />
+                    )
                   ) : (
                     <div className="text-center p-6">
                       <div className="text-5xl mb-4">🎥</div>
@@ -201,12 +224,24 @@ export default function Projects() {
                 {/* Image/Video Banner */}
                 <div className="h-40 bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center p-0 overflow-hidden">
                   {project.videoUrl ? (
-                    <video
-                      src={project.videoUrl}
-                      className="w-full h-full object-cover"
-                      muted
-                      autoPlay
-                    />
+                    isYouTubeUrl(project.videoUrl) ? (
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        src={`https://www.youtube.com/embed/${getYouTubeVideoId(project.videoUrl)}`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full"
+                      />
+                    ) : (
+                      <video
+                        src={project.videoUrl}
+                        className="w-full h-full object-cover"
+                        muted
+                        autoPlay
+                      />
+                    )
                   ) : project.imageUrl ? (
                     <img
                       src={project.imageUrl}
