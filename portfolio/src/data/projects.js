@@ -7,7 +7,7 @@ export const projects = [
     skills: ["React", "react-globe.gl", "Spring Boot", "Azure Open AI API"],
     liveLink: "https://skyfind.tech/",
     githubLink: "https://github.com/TusharSamaniya/SkyWatch_Backend-SpringBoot-.git",
-    videoUrl: "/videos/skyfind-demo.mp4",
+    videoUrl: "https://youtu.be/QzCnXUcHcr4",
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ export const projects = [
     skills: ["AWS EC2", "AWS RDS", "VPC", "Spring Boot", "Spring Security", "Bootstrap"],
     liveLink: "http://13.201.70.104/",
     githubLink: "https://github.com/TusharSamaniya/Airbnb-Clone.git",
-    videoUrl: "/videos/airbnb-clone-demo.mp4",
+    videoUrl: "https://youtu.be/59Jck0WOxRs",
   },
 ];
 
@@ -39,6 +39,6 @@ export const miniProjects = [
       "Developed a data-driven backend system using Spring Boot that fetches and manages MGNREGA government data. It enables structured storage and easy access to district performance insights through REST APIs.",
     skills: ["data.gov.in API", "Spring Boot", "MySQL", "Postman"],
     githubLink: "https://github.com/TusharSamaniya/Our-Voice-Our-Right.git",
-    videoUrl: "/videos/our-voice-our-right-demo.mp4",
+    videoUrl: "https://youtu.be/__soFnG1hCA",
   },
 ];
