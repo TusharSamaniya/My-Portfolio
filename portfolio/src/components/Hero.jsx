@@ -80,49 +80,12 @@ export default function Hero() {
     }
   };
 
-  const handleDownloadResume = async () => {
-    try {
-      console.log('📥 Initiating resume download...');
-      
-      // Use relative URL for API calls - works on both local and Vercel
-      const apiUrl = import.meta.env.VITE_API_URL || window.location.origin;
-      const response = await fetch(`${apiUrl}/api/download-resume`);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // Get the blob from the response
-      const blob = await response.blob();
-      
-      if (blob.size === 0) {
-        throw new Error('Empty file received');
-      }
-      
-      console.log(`📦 Received blob of size: ${blob.size} bytes`);
-      
-      // Create a temporary URL for the blob
-      const url = window.URL.createObjectURL(blob);
-      
-      // Create an anchor element and trigger the download
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'Tushar Samaniya Resume.pdf';
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      
-      // Clean up after a short delay to ensure download starts
-      setTimeout(() => {
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      }, 100);
-      
-      console.log('✅ Resume downloaded successfully');
-    } catch (error) {
-      console.error('❌ Error downloading resume:', error);
-      alert(`Failed to download resume: ${error.message}`);
-    }
+  const handleDownloadResume = () => {
+    // Create an anchor element to download the resume
+    const link = document.createElement('a');
+    link.href = '/Tushar_Samaniya_Resume.pdf';
+    link.download = 'Tushar_Samaniya_Resume.pdf';
+    link.click();
   };
 
   const badgeVariant = {

@@ -48,8 +48,7 @@ export default function Contact() {
     
     try {
       // Use relative URL for API calls - works on both local and Vercel
-      const apiUrl = import.meta.env.VITE_API_URL || window.location.origin;
-      const response = await fetch(`${apiUrl}/api/send-email`, {
+      const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

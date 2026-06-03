@@ -3,9 +3,9 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.GMAIL_USER || 'tusharsamaniya.me@gmail.com',
-    pass: process.env.GMAIL_PASSWORD || 'whlx bjyz yyxh eajw'
-  }
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASSWORD,
+  },
 });
 
 export default async function handler(req, res) {
@@ -40,8 +40,8 @@ export default async function handler(req, res) {
     console.log('📨 Processing email from:', email);
 
     const mailOptions = {
-      from: process.env.GMAIL_USER || 'tusharsamaniya.me@gmail.com',
-      to: process.env.GMAIL_USER || 'tusharsamaniya.me@gmail.com',
+      from: process.env.GMAIL_USER,
+      to: process.env.GMAIL_USER,
       replyTo: email,
       subject: `Portfolio Contact: ${subject}`,
       html: `
