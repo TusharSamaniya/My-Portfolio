@@ -47,7 +47,6 @@ export default function Contact() {
     setStatus('sending');
     
     try {
-      // Use relative URL for API calls - works on both local and Vercel
       const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: {
@@ -58,16 +57,17 @@ export default function Contact() {
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (response.ok) {
         setStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
         setTimeout(() => setStatus(''), 3000);
       } else {
+        console.error('Server error:', response.status, data);
         setStatus('error');
         setTimeout(() => setStatus(''), 3000);
       }
     } catch (error) {
-      console.error('❌ Error sending email:', error);
+      console.error('Network error:', error);
       setStatus('error');
       setTimeout(() => setStatus(''), 3000);
     }
